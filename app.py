@@ -26,9 +26,7 @@ def home():
     cur = g.db.execute('select * from posts')
     posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
     g.db.close()
-    # posts = dict()
     return render_template('index.html', posts=posts)
-    # return render_template('index.html')
 
 
 @app.route('/welcome')
