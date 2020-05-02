@@ -7,6 +7,10 @@ app = Flask(__name__)
 def index():
     return "<h1>Test page</h1>"
 
+@app.route('/login')
+def login():
+    return render_template('index.html')
+
 if __name__ == "__main__":
 
     if len(argv) == 2:
