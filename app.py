@@ -95,7 +95,7 @@ def page_not_found(error):
 
 
 # ------------------------------------------------------------
-@app.route('/users/<int:id>.png')
+@app.route('/api/user_image/<int:id>.png')
 def get_image(id):
     file_path = f'users/{id}.png'
     if not os.path.isfile(file_path):
