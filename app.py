@@ -3,6 +3,8 @@ from sys import argv
 from functools import wraps
 import sqlite3
 
+import json
+
 app = Flask(__name__)
 # app.config.from_object('config')
 app.secret_key = 'my secret key'
@@ -82,6 +84,14 @@ def logout():
     return redirect(url_for('home'))
 
 
+# ------------------------------------------------------------
+@app.route('/api/timetable')
+def api_timetable():
+    event = {'date': '05.05.2020', 'description': 'event description'}
+    date = [event, event]
+    return json.dumps(date)
+
+#-------------------------------------------------------------
 def connect_db():
     return sqlite3.connect(app.database)
 
