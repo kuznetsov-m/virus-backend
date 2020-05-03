@@ -2,9 +2,11 @@
 {% block content %}
 
 <h1>Requests Timetable</h1>
-{% for event in posts %}
-    <strong>Date:</strong> {{event.title}} <br>
+{% for event in events %}
+    <strong>Date:</strong> {{event.date}} <br>
+    <strong>Time:</strong> {{event.time}} <br>
     <strong>Description:</strong> {{event.description}} <br>
+    <strong>User ID:</strong> {{event.user_id}} <br>
     <br>
 {% endfor %}
 {% endblock %}

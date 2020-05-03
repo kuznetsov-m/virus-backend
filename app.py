@@ -7,10 +7,14 @@ import sqlite3
 import os
 import json
 
+from db_connector import DbConnector
+
 app = Flask(__name__)
 # app.config.from_object('config')
 app.secret_key = 'my secret key'
 app.database = 'sample.db'
+
+db_connector = DbConnector(app.database)
 
 def login_required(f):
     @wraps(f)
@@ -26,10 +30,11 @@ def login_required(f):
 @app.route('/')
 @login_required
 def home():
-    g.db = connect_db()
-    cur = g.db.execute('select * from posts')
-    posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
-    g.db.close()
+    # g.db = connect_db()
+    # cur = g.db.execute('select * from posts')
+    # posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
+    # g.db.close()
+    posts = []
     return render_template('index.html', posts=posts)
 
 
@@ -42,11 +47,8 @@ def dashboard():
 @app.route('/timetable')
 @login_required
 def timetable():
-    g.db = connect_db()
-    cur = g.db.execute('select * from posts')
-    posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
-    g.db.close()
-    return render_template('timetable.html', posts=posts)
+    events = db_connector.get_all_events()
+    return render_template('timetable.html', events=events)
 
 
 @app.route('/conversation_request', methods=['GET', 'POST'])
@@ -119,8 +121,8 @@ def create_event():
         'description': request.json.get('description', ""),
         'user_id': request.json['user_id'],
     }
-    return jsonify(event), 201
 
+    return jsonify(event), 201
 
 #-------------------------------------------------------------
 def connect_db():
