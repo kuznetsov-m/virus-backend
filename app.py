@@ -104,7 +104,23 @@ def api_timetable():
     event1 = {'date': '05.05.2020', 'time': '15:00', 'description': 'event description', 'author_image': '/users/1.png'}
     event2 = {'date': '05.05.2020', 'time': '12:00', 'description': 'event description', 'author_image': '/users/2.png'}
     date = [event1, event2]
-    return json.dumps(date)
+    return jsonify(date), 201
+
+@app.route('/api/create_event', methods=['POST'])
+def create_event():
+    if not request.json or not 'date' in request.json \
+                        or not 'time' in request.json \
+                        or not 'description' in request.json \
+                        or not 'user_id' in request.json:
+        abort(400)
+    event = {
+        'date': request.json['date'],
+        'time': request.json['time'],
+        'description': request.json.get('description', ""),
+        'user_id': request.json['user_id'],
+    }
+    return jsonify(event), 201
+
 
 #-------------------------------------------------------------
 def connect_db():
