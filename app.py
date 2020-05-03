@@ -120,6 +120,7 @@ def create_event():
         'description': request.json.get('description', ""),
         'user_id': request.json['user_id'],
     }
+    db_connector.create_event_from_dict(event)
 
     return jsonify(event), 201
 

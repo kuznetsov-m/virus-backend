@@ -57,6 +57,16 @@ class DbConnector():
             print('INFO:' + str(c.fetchall()))
             
             connection.commit()
+
+    def create_event_from_dict(self, event: dict):
+        if 'date' not in event or \
+            'time' not in event or \
+            'description' not in event or \
+            'user_id' not in event:
+            print('ERROR: incorrect parameters')
+            return
+
+        self.create_event(event['date'], event['time'], event['description'], event['user_id'])
     
     def get_all_events(self):
         with sqlite3.connect(self._db_name) as connection:
@@ -65,6 +75,6 @@ class DbConnector():
             sql = f'SELECT * FROM {self._events_table}'
             
             c.execute(sql)
-            events = [dict(date=row[0], time=row[1], description=row[2], user_id=row[3] ) for row in c.fetchall()]
+            events = [dict(user_id=row[0], date=row[1], time=row[2], description=row[3] ) for row in c.fetchall()]
 
             return events
