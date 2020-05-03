@@ -13,8 +13,11 @@ app = Flask(__name__)
 # app.config.from_object('config')
 app.secret_key = 'my secret key'
 app.database = 'sample.db'
+app.config['USERS'] = os.path.join('users')
 
 db_connector = DbConnector(app.database)
+db_connector.create_user('Mike', 'Wazowski', 2, 'User description text')
+db_connector.create_user('Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
 db_connector.create_event('05.05.2020', '15:00', 'first test event', 1)
 
 def login_required(f):
@@ -43,6 +46,13 @@ def home():
 @login_required
 def dashboard():
     return render_template('dashboard.html')
+
+
+@app.route('/users')
+@login_required
+def users():
+    users = db_connector.get_all_users()
+    return render_template('users.html', users=users)
 
 
 @app.route('/timetable')
@@ -95,6 +105,23 @@ def page_not_found(error):
 
 
 # ------------------------------------------------------------
+@app.route('/api/create_user', methods=['POST'])
+def create_user():
+    if not request.json or not 'first_name' in request.json \
+                        or not 'last_name' in request.json \
+                        or not 'role_id' in request.json \
+                        or not 'description' in request.json:
+        abort(400)
+    user = {
+        'first_name': request.json['first_name'],
+        'last_name': request.json['last_name'],
+        'role_id': request.json['role_id'],
+        'description': request.json.get('description', ""),
+    }
+    db_connector.create_user_from_dict(user)
+
+    return jsonify(user), 201
+
 @app.route('/api/user_image/<int:id>.png')
 def get_image(id):
     file_path = f'users/{id}.png'
@@ -123,6 +150,8 @@ def create_event():
     db_connector.create_event_from_dict(event)
 
     return jsonify(event), 201
+
+# @app.route('/api/set_doctor_for_event', methods=['POST'])
 
 #-------------------------------------------------------------
 def connect_db():

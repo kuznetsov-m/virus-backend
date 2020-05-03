@@ -1,0 +1,13 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+<h1>Users</h1>
+{% for user in users %}
+    <strong>User ID:</strong> {{user.id}} <br>
+    <strong>First name:</strong> {{user.first_name}} <br>
+    <strong>Last name:</strong> {{user.last_name}} <br>
+    <strong>Role ID:</strong> {{user.role_id}} <br>
+    <strong>Description:</strong> {{user.description}} <br>
+    <br>
+{% endfor %}
+{% endblock %}
