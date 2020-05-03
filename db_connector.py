@@ -26,16 +26,16 @@ class DbConnector():
         with sqlite3.connect(self._db_name) as connection:
             c = connection.cursor()
             
-            # # Users table
-            # sql = '''CREATE TABLE IF NOT EXISTS %s''' \
-            #       '''(id INTEGER PRIMARY KEY''' % (self._users_table)
+            # Users table
+            sql = '''CREATE TABLE IF NOT EXISTS %s''' \
+                  '''(id INTEGER PRIMARY KEY''' % (self._users_table)
                 
-            # for item in self._users_table_row_names:
-            #     sql += ', %s TEXT' % (item)
-            # sql += ');'
+            for item in self._users_table_row_names:
+                sql += ', %s TEXT' % (item)
+            sql += ');'
 
-            # c.execute(sql)
-            # print('INFO:' + str(c.fetchall()))
+            c.execute(sql)
+            print('INFO:' + str(c.fetchall()))
 
             # Events table
             sql = '''CREATE TABLE IF NOT EXISTS %s''' \
@@ -50,13 +50,52 @@ class DbConnector():
 
             connection.commit()
 
-    # def create_user(self, first_name: str, last_name: str, role_id: int, description: str):
-    #     if not first_name or not last_name or not role_id or not description:
-    #         print('ERROR: incorrect parameters')
-    #         return
+    def create_user(self, first_name: str, last_name: str, role_id: int, description: str):
+        if not first_name or not last_name or not role_id or not description:
+            print('ERROR: incorrect parameters')
+            return
 
-    #     with sqlite3.connect(self._db_name) as connection:
-    #         c = connection.cursor()
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+
+            keysStr = ''
+            valuesStr = ''
+            for key in self._users_table_row_names:
+                keysStr += f'{key},'
+                valuesStr += '?,'
+            if keysStr[-1:] == ',':
+                keysStr = keysStr[:-1]
+            if valuesStr[-1:] == ',':
+                valuesStr = valuesStr[:-1]
+
+            sql = f'INSERT INTO {self._users_table} ({keysStr}) VALUES({valuesStr})'
+            values = [first_name, last_name, str(role_id), str(description)]
+            c.execute(sql, values)
+            print('INFO:' + str(c.fetchall()))
+            
+            connection.commit()
+
+    def create_user_from_dict(self, user: dict):
+        for row_name in self._users_table_row_names:
+            if row_name not in user:
+                print('ERROR: incorrect parameters')
+                return
+
+        self.create_event(user['first_name'], user['last_name'], \
+                        int(user['role_id']), user['description'])
+
+    def get_all_users(self):
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+            
+            sql = f'SELECT * FROM {self._users_table}'
+            
+            c.execute(sql)
+            users = [dict(id=row[0], first_name=row[1], \
+                            last_name=row[2], role_id=row[3], \
+                            description=row[4]) for row in c.fetchall()]
+
+            return users      
 
     def create_event(self, date: str, time: str, description: str, user_id: int):
         if not date or not time or not description or not user_id:
@@ -67,12 +106,16 @@ class DbConnector():
             c = connection.cursor()
 
             keysStr = ''
+            valuesStr = ''
             for key in self._events_table_row_names:
                 keysStr += f'{key},'
+                valuesStr += '?,'
             if keysStr[-1:] == ',':
                 keysStr = keysStr[:-1]
+            if valuesStr[-1:] == ',':
+                valuesStr = valuesStr[:-1]
 
-            sql = f'INSERT INTO {self._events_table} ({keysStr}) VALUES(?, ?, ?, ?)'
+            sql = f'INSERT INTO {self._events_table} ({keysStr}) VALUES({valuesStr})'
             values = [date, time, description, str(user_id)]
             c.execute(sql, values)
             print('INFO:' + str(c.fetchall()))
