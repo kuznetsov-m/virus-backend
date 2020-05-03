@@ -106,7 +106,7 @@ def page_not_found(error):
 
 # ------------------------------------------------------------
 @app.route('/api/create_user', methods=['POST'])
-def create_user():
+def api_create_user():
     if not request.json or not 'first_name' in request.json \
                         or not 'last_name' in request.json \
                         or not 'role_id' in request.json \
@@ -122,8 +122,13 @@ def create_user():
 
     return jsonify(user), 201
 
+@app.route('/api/users')
+def api_users():
+    users = db_connector.get_all_users()
+    return jsonify(users), 201
+
 @app.route('/api/user_image/<int:id>.png')
-def get_image(id):
+def api_get_image(id):
     file_path = f'users/{id}.png'
     if not os.path.isfile(file_path):
         abort(404)
@@ -135,7 +140,7 @@ def api_timetable():
     return jsonify(events), 201
 
 @app.route('/api/create_event', methods=['POST'])
-def create_event():
+def api_create_event():
     if not request.json or not 'date' in request.json \
                         or not 'time' in request.json \
                         or not 'description' in request.json \
