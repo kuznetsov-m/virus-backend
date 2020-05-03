@@ -75,6 +75,6 @@ class DbConnector():
             sql = f'SELECT * FROM {self._events_table}'
             
             c.execute(sql)
-            events = [dict(user_id=row[0], date=row[1], time=row[2], description=row[3] ) for row in c.fetchall()]
+            events = [dict(id=row[0], date=row[1], time=row[2], description=row[3], user_id=row[4] ) for row in c.fetchall()]
 
             return events

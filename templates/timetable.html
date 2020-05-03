@@ -3,6 +3,7 @@
 
 <h1>Requests Timetable</h1>
 {% for event in events %}
+    <strong>Event ID:</strong> {{event.id}} <br>
     <strong>Date:</strong> {{event.date}} <br>
     <strong>Time:</strong> {{event.time}} <br>
     <strong>Description:</strong> {{event.description}} <br>
