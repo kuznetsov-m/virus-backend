@@ -5,8 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sqlite3
 
 app = Flask(__name__)
-app.secret_key = 'my secret key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///posts.db'
+app.config.from_object('config.DevelopmentConfig')
 
 db = SQLAlchemy(app)
 
