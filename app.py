@@ -15,6 +15,7 @@ app.secret_key = 'my secret key'
 app.database = 'sample.db'
 
 db_connector = DbConnector(app.database)
+db_connector.create_event('05.05.2020', '15:00', 'first test event', 1)
 
 def login_required(f):
     @wraps(f)
@@ -103,10 +104,8 @@ def get_image(id):
 
 @app.route('/api/timetable')
 def api_timetable():
-    event1 = {'date': '05.05.2020', 'time': '15:00', 'description': 'event description', 'author_image': '/users/1.png'}
-    event2 = {'date': '05.05.2020', 'time': '12:00', 'description': 'event description', 'author_image': '/users/2.png'}
-    date = [event1, event2]
-    return jsonify(date), 201
+    events = db_connector.get_all_events()
+    return jsonify(events), 201
 
 @app.route('/api/create_event', methods=['POST'])
 def create_event():
