@@ -4,7 +4,11 @@ import sqlite3
 class DbConnector():
     def __init__(self, db_name: str):
         self._db_name = db_name
+        self._users_table = 'users'
+        self._users_table_row_names = ['first_name', 'last_name', 'role_id', 'description']
         self._events_table = 'events'
+        self._events_table_row_names = ['date', 'time', 'description', 'user_id']
+        
 
         self._create_db()
 
@@ -22,12 +26,22 @@ class DbConnector():
         with sqlite3.connect(self._db_name) as connection:
             c = connection.cursor()
             
-            rowNames = ['date', 'time', 'description', 'user_id']
+            # # Users table
+            # sql = '''CREATE TABLE IF NOT EXISTS %s''' \
+            #       '''(id INTEGER PRIMARY KEY''' % (self._users_table)
+                
+            # for item in self._users_table_row_names:
+            #     sql += ', %s TEXT' % (item)
+            # sql += ');'
 
+            # c.execute(sql)
+            # print('INFO:' + str(c.fetchall()))
+
+            # Events table
             sql = '''CREATE TABLE IF NOT EXISTS %s''' \
                   '''(id INTEGER PRIMARY KEY''' % (self._events_table)
                 
-            for item in rowNames:
+            for item in self._events_table_row_names:
                 sql += ', %s TEXT' % (item)
             sql += ');'
 
@@ -35,6 +49,14 @@ class DbConnector():
             print('INFO:' + str(c.fetchall()))
 
             connection.commit()
+
+    # def create_user(self, first_name: str, last_name: str, role_id: int, description: str):
+    #     if not first_name or not last_name or not role_id or not description:
+    #         print('ERROR: incorrect parameters')
+    #         return
+
+    #     with sqlite3.connect(self._db_name) as connection:
+    #         c = connection.cursor()
 
     def create_event(self, date: str, time: str, description: str, user_id: int):
         if not date or not time or not description or not user_id:
@@ -44,9 +66,8 @@ class DbConnector():
         with sqlite3.connect(self._db_name) as connection:
             c = connection.cursor()
 
-            keys = ['date', 'time', 'description', 'user_id']
             keysStr = ''
-            for key in keys:
+            for key in self._events_table_row_names:
                 keysStr += f'{key},'
             if keysStr[-1:] == ',':
                 keysStr = keysStr[:-1]
@@ -59,12 +80,10 @@ class DbConnector():
             connection.commit()
 
     def create_event_from_dict(self, event: dict):
-        if 'date' not in event or \
-            'time' not in event or \
-            'description' not in event or \
-            'user_id' not in event:
-            print('ERROR: incorrect parameters')
-            return
+        for row_name in self._events_table_row_names:
+            if row_name not in event:
+                print('ERROR: incorrect parameters')
+                return
 
         self.create_event(event['date'], event['time'], event['description'], event['user_id'])
     
@@ -75,6 +94,7 @@ class DbConnector():
             sql = f'SELECT * FROM {self._events_table}'
             
             c.execute(sql)
-            events = [dict(id=row[0], date=row[1], time=row[2], description=row[3], user_id=row[4] ) for row in c.fetchall()]
+            events = [dict(id=row[0], date=row[1], \
+                            time=row[2], description=row[3], user_id=row[4]) for row in c.fetchall()]
 
             return events
