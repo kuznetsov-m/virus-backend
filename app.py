@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request, render_template, redirect, url_for, request, session, flash, g, \
-    make_response, abort
+    make_response, abort, send_file
 from sys import argv
 from functools import wraps
 import sqlite3
@@ -89,6 +89,8 @@ def logout():
 @app.errorhandler(404)
 def page_not_found(error):
    return render_template('404.html', title = '404'), 404
+
+
 # ------------------------------------------------------------
 @app.route('/users/<int:id>.png')
 def get_image(id):
