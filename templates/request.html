@@ -1,0 +1,17 @@
+{% extends "menu.html" %}
+{% block content %}
+
+<h1>Сonversation request</h1>
+<form action="" method="post">
+    <label for="start_date">Start date:</label>
+    <br>
+    <input type="date" name="date" value="2020-05-05" min="2020-05-05" max="2020-12-30">
+    <br>
+    <label for="Description">Description:</label>
+    <br>
+    <input type="text" placeholder="Description" name="description" value="I need to speak with psychologist.">
+    <br>
+    <input class="btn btn-default" type="submit" value="Send Request">
+</form>
+
+{% endblock %}

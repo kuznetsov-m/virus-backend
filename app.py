@@ -28,17 +28,21 @@ def home():
     g.db.close()
     return render_template('index.html', posts=posts)
 
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # g.db = connect_db()
-    # cur = g.db.execute('select * from posts')
-    # posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
-    # g.db.close()
-    if request.method == 'POST':
-        date = request.form['date']
-        description =  request.form['description']
     return render_template('dashboard.html')
+
+
+# @app.route('/request')
+# @login_required
+# def request():
+#     if request.method == 'POST':
+#         date = request.form['date']
+#         description =  request.form['description']
+#         flash(f'date: {date} description: {description}')
+#     return render_template('request.html')
 
 
 @app.route('/welcome')
