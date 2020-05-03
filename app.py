@@ -1,8 +1,10 @@
-from flask import Flask, jsonify, request, render_template, redirect, url_for, request, session, flash, g
+from flask import Flask, jsonify, request, render_template, redirect, url_for, request, session, flash, g, \
+    make_response, abort
 from sys import argv
 from functools import wraps
 import sqlite3
 
+import os
 import json
 
 app = Flask(__name__)
@@ -84,11 +86,22 @@ def logout():
     return redirect(url_for('home'))
 
 
+@app.errorhandler(404)
+def page_not_found(error):
+   return render_template('404.html', title = '404'), 404
 # ------------------------------------------------------------
+@app.route('/users/<int:id>.png')
+def get_image(id):
+    file_path = f'users/{id}.png'
+    if not os.path.isfile(file_path):
+        abort(404)
+    return send_file(file_path, mimetype='image/png')
+
 @app.route('/api/timetable')
 def api_timetable():
-    event = {'date': '05.05.2020', 'description': 'event description'}
-    date = [event, event]
+    event1 = {'date': '05.05.2020', 'time': '15:00', 'description': 'event description', 'author_image': '/users/1.png'}
+    event2 = {'date': '05.05.2020', 'time': '12:00', 'description': 'event description', 'author_image': '/users/2.png'}
+    date = [event1, event2]
     return json.dumps(date)
 
 #-------------------------------------------------------------
