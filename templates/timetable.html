@@ -1,0 +1,10 @@
+{% extends "dashboard.html" %}
+{% block content %}
+
+<h1>Requests Timetable</h1>
+{% for event in posts %}
+    <strong>Date:</strong> {{event.title}} <br>
+    <strong>Description:</strong> {{event.description}} <br>
+    <br>
+{% endfor %}
+{% endblock %}

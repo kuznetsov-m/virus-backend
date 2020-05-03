@@ -35,9 +35,23 @@ def dashboard():
     return render_template('dashboard.html')
 
 
-@app.route('/conversation_request')
+@app.route('/timetable')
+@login_required
+def timetable():
+    g.db = connect_db()
+    cur = g.db.execute('select * from posts')
+    posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
+    g.db.close()
+    return render_template('timetable.html', posts=posts)
+
+
+@app.route('/conversation_request', methods=['GET', 'POST'])
 @login_required
 def conversation_request():
+    if request.method == 'POST':
+        date = request.form['date']
+        description = request.form['description']
+        flash(f'date: {date} description: {description}')
     return render_template('conversation_request.html')
 
 
