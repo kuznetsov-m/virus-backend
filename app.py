@@ -35,14 +35,10 @@ def dashboard():
     return render_template('dashboard.html')
 
 
-# @app.route('/request')
-# @login_required
-# def request():
-#     if request.method == 'POST':
-#         date = request.form['date']
-#         description =  request.form['description']
-#         flash(f'date: {date} description: {description}')
-#     return render_template('request.html')
+@app.route('/conversation_request')
+@login_required
+def conversation_request():
+    return render_template('conversation_request.html')
 
 
 @app.route('/welcome')
