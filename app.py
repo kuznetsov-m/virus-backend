@@ -19,7 +19,7 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             flash('You need to login first.')
-            return redirect(url_for('login2'))
+            return redirect(url_for('login'))
     return wrap
 
 
@@ -35,8 +35,8 @@ def welcome():
     return render_template('welcome.html')
 
 
-@app.route('/login2', methods=['GET', 'POST'])
-def login2():
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     error = None
     if request.method == 'POST':
         if request.form['username'] != 'admin' \
@@ -46,7 +46,7 @@ def login2():
             session['logged_in'] = True
             flash('You were just logged in!')
             return redirect(url_for('home'))
-    return render_template('login2.html', error=error)
+    return render_template('login.html', error=error)
 
 
 @app.route('/logout')
