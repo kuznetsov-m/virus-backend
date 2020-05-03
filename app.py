@@ -28,6 +28,18 @@ def home():
     g.db.close()
     return render_template('index.html', posts=posts)
 
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    # g.db = connect_db()
+    # cur = g.db.execute('select * from posts')
+    # posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
+    # g.db.close()
+    if request.method == 'POST':
+        date = request.form['date']
+        description =  request.form['description']
+    return render_template('dashboard.html')
+
 
 @app.route('/welcome')
 def welcome():
@@ -44,7 +56,7 @@ def login():
         else:
             session['logged_in'] = True
             flash('You were just logged in!')
-            return redirect(url_for('home'))
+            return redirect(url_for('dashboard'))
     return render_template('login.html', error=error)
 
 
