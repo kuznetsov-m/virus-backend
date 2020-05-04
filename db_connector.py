@@ -201,20 +201,14 @@ class DbConnector():
         with sqlite3.connect(self._db_name) as connection:
             c = connection.cursor()
             
-            users = {self._events_table}
-            events = {self._events_table}
-            
-            sql = f'SELECT events.id, events.date, events.time, events.description' \
-                    'FROM events INNER JOIN users' \
-                    'ON events.user_id = users.id' \
-                    'WHERE user_id = "1"'
-            
-            sql = f'''SELECT events.id, events.date, events.time, events.description
-                        FROM events
-                        INNER JOIN users
-                        ON events.user_id = users.id
-                        WHERE login = "{login}"'''
-            
+            users = self._users_table
+            events = self._events_table
+
+            sql = f'''SELECT {events}.id, {events}.date, {events}.time, {events}.description
+                        FROM {events}
+                        INNER JOIN {users}
+                        ON {events}.user_id = {users}.id
+                        WHERE login = "{login}"'''            
             c.execute(sql)
             events = [dict(id=row[0], date=row[1], time=row[2], description=row[3]) \
                         for row in c.fetchall()]
