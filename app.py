@@ -16,6 +16,8 @@ app.database = 'sample.db'
 app.config['USERS'] = os.path.join('users')
 
 db_connector = DbConnector(app.database)
+db_connector.create_user('1@m.m', '1', \
+                        'Mike', 'Brown', 2, 'User description text')
 db_connector.create_user('m-wazowski@gmail.com', '1234', \
                         'Mike', 'Wazowski', 2, 'User description text')
 db_connector.create_user('g-house@gmail.com', '1234', \
