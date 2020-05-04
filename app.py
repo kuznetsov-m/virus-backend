@@ -211,6 +211,21 @@ def api_create_event():
 
     return jsonify(event), 201
 
+@app.route('/api/add_token', methods=['POST'])
+def api_add_token():
+    if not request.json or not 'value' in request.json:
+        abort(400)
+
+    value = request.json['value']
+    db_connector.add_token(value)
+
+    return jsonify(value=value), 201
+
+@app.route('/api/tokens')
+def api_tokens():
+    tokens = db_connector.get_tokens_list()
+    return jsonify(tokens), 201
+
 # @app.route('/api/set_doctor_for_event', methods=['POST'])
 
 #-------------------------------------------------------------
