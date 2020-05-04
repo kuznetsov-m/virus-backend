@@ -132,6 +132,8 @@ def api_create_user():
         return jsonify(error = 3), 201
 
     db_connector.create_user_from_dict(user)
+    user_id = db_connector.get_user_id_by_login(user['login'])
+    user['user_id'] = user_id
 
     return jsonify(user), 201
 
