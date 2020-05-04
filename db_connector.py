@@ -113,6 +113,19 @@ class DbConnector():
                 return True
             return False
 
+    def get_user_id_by_login(self, login: str):
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+            
+            sql = f'SELECT id, login, password FROM {self._users_table} WHERE login IS "{login}"'
+            
+            c.execute(sql)
+            user = [dict(id=row[0], login=row[1], password=row[2]) for row in c.fetchall()]
+
+            if user:
+                return user[0]['id']
+            return 0
+
     def check_valid_login_password(self, login: str, password: str):
         with sqlite3.connect(self._db_name) as connection:
             c = connection.cursor()

@@ -7,8 +7,14 @@ connector.create_user('m-wazowski@gmail.com', '1234', \
                         'Mike', 'Wazowski', 2, 'User description text')
 connector.create_user('g-house@gmail.com', '1234', \
                         'Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
+
+
 print(connector.check_exist_user('g-house@gmail.com'))
 print(connector.check_exist_user('not_exist@mail.ru'))
+
+print('get_user_id_by_login()')
+print(f'id: {connector.get_user_id_by_login("g-house@gmail.com")}')
+
 print(connector.check_valid_login_password('g-house@gmail.com', '1234'))
 print(connector.check_valid_login_password('g-house@gmail.com', '54321'))
 
