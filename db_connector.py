@@ -112,7 +112,19 @@ class DbConnector():
             if user:
                 return True
             return False
-        
+
+    def check_valid_login_password(self, login: str, password: str):
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+            
+            sql = f'SELECT login, password FROM {self._users_table} WHERE login IS "{login}" AND password IS "{password}"'
+            
+            c.execute(sql)
+            user = [dict(login=row[0], password=row[1]) for row in c.fetchall()]
+
+            if user:
+                return True
+            return False
 
     def create_event(self, date: str, time: str, description: str, user_id: int):
         if not date or not time or not description or not user_id:
