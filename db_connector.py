@@ -7,7 +7,7 @@ class DbConnector():
         self._users_table = 'users'
         self._users_table_row_names = ['login', 'password', 'first_name', 'last_name', 'role_id', 'description']
         self._events_table = 'events'
-        self._events_table_row_names = ['date', 'time', 'description', 'user_id']
+        self._events_table_row_names = ['date', 'time', 'description', 'user_id', 'doctor_id']
         
 
         self._create_db()
@@ -157,6 +157,8 @@ class DbConnector():
             print('ERROR: incorrect parameters')
             return
 
+        doctor_id = self.get_user_id_by_login('g-house@gmail.com')
+
         with sqlite3.connect(self._db_name) as connection:
             c = connection.cursor()
 
@@ -171,18 +173,13 @@ class DbConnector():
                 valuesStr = valuesStr[:-1]
 
             sql = f'INSERT INTO {self._events_table} ({keysStr}) VALUES({valuesStr})'
-            values = [date, time, description, str(user_id)]
+            values = [date, time, description, str(user_id), str(doctor_id)]
             c.execute(sql, values)
             print('INFO:' + str(c.fetchall()))
             
             connection.commit()
 
     def create_event_from_dict(self, event: dict):
-        for row_name in self._events_table_row_names:
-            if row_name not in event:
-                print('ERROR: incorrect parameters')
-                return
-
         self.create_event(event['date'], event['time'], event['description'], event['user_id'])
     
     def get_all_events(self):
@@ -193,7 +190,8 @@ class DbConnector():
             
             c.execute(sql)
             events = [dict(id=row[0], date=row[1], \
-                            time=row[2], description=row[3], user_id=row[4]) for row in c.fetchall()]
+                            time=row[2], description=row[3], user_id=row[4], doctor_id=row[5], ) \
+                            for row in c.fetchall()]
 
             return events
     
@@ -204,13 +202,14 @@ class DbConnector():
             users = self._users_table
             events = self._events_table
 
-            sql = f'''SELECT {events}.id, {events}.date, {events}.time, {events}.description
-                        FROM {events}
-                        INNER JOIN {users}
-                        ON {events}.user_id = {users}.id
-                        WHERE login = "{login}"'''            
+            sql = f'''SELECT {events}.id, {events}.date, {events}.time, {events}.description,
+                        {events}.doctor_id
+                    FROM {events}
+                    INNER JOIN {users}
+                    ON {events}.user_id = {users}.id
+                    WHERE login = "{login}"'''            
             c.execute(sql)
-            events = [dict(id=row[0], date=row[1], time=row[2], description=row[3]) \
+            events = [dict(id=row[0], date=row[1], time=row[2], description=row[3], doctor_id=row[4]) \
                         for row in c.fetchall()]
 
             return events
