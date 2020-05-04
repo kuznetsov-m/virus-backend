@@ -35,3 +35,11 @@ print(f'{len(events)}: {json.dumps(events)}')
 print('get_all_events()')
 events = connector.get_all_events()
 print(f'{len(events)}: {json.dumps(events)}')
+
+print('add_token()')
+connector.add_token('1237564456123')
+connector.add_token('--0-1-1-2-2-3-')
+
+print('get_tokens_list()')
+tokens = connector.get_tokens_list()
+print(f'{len(tokens)}: {json.dumps(tokens)}')

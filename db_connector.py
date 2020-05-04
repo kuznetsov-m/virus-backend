@@ -8,6 +8,8 @@ class DbConnector():
         self._users_table_row_names = ['login', 'password', 'first_name', 'last_name', 'role_id', 'description']
         self._events_table = 'events'
         self._events_table_row_names = ['date', 'time', 'description', 'user_id', 'doctor_id']
+        self._tokens_table = 'tokens'
+        self._tokens_table_row_names = ['value']
         
 
         self._create_db()
@@ -47,6 +49,18 @@ class DbConnector():
 
             c.execute(sql)
             print('INFO:' + str(c.fetchall()))
+
+            # Tokens table
+            sql = '''CREATE TABLE IF NOT EXISTS %s''' \
+                  '''(id INTEGER PRIMARY KEY''' % (self._tokens_table)
+                
+            for item in self._tokens_table_row_names:
+                sql += ', %s TEXT' % (item)
+            sql += ');'
+
+            c.execute(sql)
+            print('INFO:' + str(c.fetchall()))
+
 
             connection.commit()
 
@@ -213,3 +227,29 @@ class DbConnector():
                         for row in c.fetchall()]
 
             return events
+
+    def add_token(self, token: str):
+        if not token:
+            print('ERROR: incorrect parameters')
+            return
+        
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+
+            # sql = f'INSERT INTO {self._tokens_table} (value) VALUES({token})'
+            sql = f'INSERT INTO {self._tokens_table} (value) VALUES(?)'
+            c.execute(sql, [token])
+            print('INFO:' + str(c.fetchall()))
+            
+            connection.commit()
+
+    def get_tokens_list(self):        
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+            
+            sql = f'SELECT id, value FROM {self._tokens_table}'
+            
+            c.execute(sql)
+            tokens = [dict(id=row[0], value=row[1]) for row in c.fetchall()]
+
+            return tokens
