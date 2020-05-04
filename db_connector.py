@@ -98,7 +98,21 @@ class DbConnector():
                             last_name=row[4], role_id=row[5], \
                             description=row[6]) for row in c.fetchall()]
 
-            return users      
+            return users
+
+    def check_exist_user(self, login: str):
+        with sqlite3.connect(self._db_name) as connection:
+            c = connection.cursor()
+            
+            sql = f'SELECT login, password FROM {self._users_table} WHERE login IS "{login}"'
+            
+            c.execute(sql)
+            user = [dict(login=row[0], password=row[1]) for row in c.fetchall()]
+
+            if user:
+                return True
+            return False
+        
 
     def create_event(self, date: str, time: str, description: str, user_id: int):
         if not date or not time or not description or not user_id:

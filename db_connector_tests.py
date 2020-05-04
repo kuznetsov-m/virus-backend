@@ -6,6 +6,8 @@ connector.create_user('m-wazowski@gmail.com', '1234', \
                         'Mike', 'Wazowski', 2, 'User description text')
 connector.create_user('g-house@gmail.com', '1234', \
                         'Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
+print(connector.check_exist_user('g-house@gmail.com'))
+print(connector.check_exist_user('not_exist@mail.ru'))
 
 connector.create_event(None, None, None, None)
 connector.create_event('123', None, None, None)
