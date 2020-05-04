@@ -23,7 +23,7 @@ db_connector.create_user('g-house@gmail.com', '1234', \
 db_connector.create_event("05.05.2020", '15:00', 'event description', 1)
 db_connector.create_event("05.05.2020", '12:00', 'my description', 1)
 db_connector.create_event("06.05.2020", '12:00', 'event description', 1)
-# db_connector.create_event("10.05.2020", '13:00', 'consilium', 2)
+db_connector.create_event("10.05.2020", '13:00', 'consilium', 2)
 
 def login_required(f):
     @wraps(f)
@@ -162,7 +162,9 @@ def api_authentication():
         return jsonify(error = 1), 201
     if not db_connector.check_valid_login_password(login, password):
         return jsonify(error = 2), 201
-    return jsonify(login=login, password=password), 201
+
+    user_id = db_connector.get_user_id_by_login(login)
+    return jsonify(login=login, password=password, user_id=user_id), 201
 
 
 @app.route('/api/timetable')
@@ -189,13 +191,13 @@ def api_create_event():
     if not request.json or not 'date' in request.json \
                         or not 'time' in request.json \
                         or not 'description' in request.json \
-                        or not 'user_id' in request.json:
+                        or not 'user_login' in request.json:
         abort(400)
     event = {
         'date': request.json['date'],
         'time': request.json['time'],
         'description': request.json.get('description', ""),
-        'user_id': request.json['user_id'],
+        'user_login': request.json['user_login'],
     }
     db_connector.create_event_from_dict(event)
 
