@@ -1,3 +1,4 @@
+import json
 from db_connector import DbConnector
 
 connector = DbConnector('sample.db')
@@ -16,8 +17,15 @@ connector.create_event('123', None, None, None)
 connector.create_event('123', '123', None, None)
 connector.create_event('123', '123', '123', None)
 
-connector.create_event("123", '456', 'text text', 55)
-connector.create_event("234", '41212356', 'text asdtext', 44)
+connector.create_event("05.05.2020", '15:00', 'event description', 1)
+connector.create_event("05.05.2020", '12:00', 'my description', 1)
+connector.create_event("06.05.2020", '12:00', 'event description', 1)
+connector.create_event("10.05.2020", '13:00', 'consilium', 2)
 
+print('get_user_events()')
+events = connector.get_user_events('m-wazowski@gmail.com')
+print(f'{len(events)}: {json.dumps(events)}')
+
+print('get_all_events()')
 events = connector.get_all_events()
-print(events)
+print(f'{len(events)}: {json.dumps(events)}')
