@@ -16,8 +16,10 @@ app.database = 'sample.db'
 app.config['USERS'] = os.path.join('users')
 
 db_connector = DbConnector(app.database)
-db_connector.create_user('Mike', 'Wazowski', 2, 'User description text')
-db_connector.create_user('Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
+db_connector.create_user('m-wazowski@gmail.com', '1234', \
+                        'Mike', 'Wazowski', 2, 'User description text')
+db_connector.create_user('g-house@gmail.com', '1234', \
+                        'Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
 db_connector.create_event('05.05.2020', '15:00', 'first test event', 1)
 
 def login_required(f):
@@ -107,12 +109,16 @@ def page_not_found(error):
 # ------------------------------------------------------------
 @app.route('/api/create_user', methods=['POST'])
 def api_create_user():
-    if not request.json or not 'first_name' in request.json \
+    if not request.json or not 'login' in request.json \
+                        or not 'password' in request.json \
+                        or not 'first_name' in request.json \
                         or not 'last_name' in request.json \
                         or not 'role_id' in request.json \
                         or not 'description' in request.json:
         abort(400)
     user = {
+        'login': request.json['login'],
+        'password': request.json['password'],
         'first_name': request.json['first_name'],
         'last_name': request.json['last_name'],
         'role_id': request.json['role_id'],

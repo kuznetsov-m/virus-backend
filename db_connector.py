@@ -5,7 +5,7 @@ class DbConnector():
     def __init__(self, db_name: str):
         self._db_name = db_name
         self._users_table = 'users'
-        self._users_table_row_names = ['first_name', 'last_name', 'role_id', 'description']
+        self._users_table_row_names = ['login', 'password', 'first_name', 'last_name', 'role_id', 'description']
         self._events_table = 'events'
         self._events_table_row_names = ['date', 'time', 'description', 'user_id']
         
@@ -50,8 +50,10 @@ class DbConnector():
 
             connection.commit()
 
-    def create_user(self, first_name: str, last_name: str, role_id: int, description: str):
-        if not first_name or not last_name or not role_id or not description:
+    def create_user(self, login: str, password: str, first_name: str, last_name: str,
+                    role_id: int, description: str):
+        if not login or not password or not first_name or not last_name \
+                    or not role_id or not description:
             print('ERROR: incorrect parameters')
             return
 
@@ -69,7 +71,7 @@ class DbConnector():
                 valuesStr = valuesStr[:-1]
 
             sql = f'INSERT INTO {self._users_table} ({keysStr}) VALUES({valuesStr})'
-            values = [first_name, last_name, str(role_id), str(description)]
+            values = [login, password, first_name, last_name, str(role_id), str(description)]
             c.execute(sql, values)
             print('INFO:' + str(c.fetchall()))
             
@@ -81,7 +83,8 @@ class DbConnector():
                 print('ERROR: incorrect parameters')
                 return
 
-        self.create_event(user['first_name'], user['last_name'], \
+        self.create_user(user['login'], user['password'], \
+                        user['first_name'], user['last_name'], \
                         int(user['role_id']), user['description'])
 
     def get_all_users(self):
@@ -91,9 +94,9 @@ class DbConnector():
             sql = f'SELECT * FROM {self._users_table}'
             
             c.execute(sql)
-            users = [dict(id=row[0], first_name=row[1], \
-                            last_name=row[2], role_id=row[3], \
-                            description=row[4]) for row in c.fetchall()]
+            users = [dict(id=row[0], first_name=row[3], \
+                            last_name=row[4], role_id=row[5], \
+                            description=row[6]) for row in c.fetchall()]
 
             return users      
 
