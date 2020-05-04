@@ -124,6 +124,10 @@ def api_create_user():
         'role_id': request.json['role_id'],
         'description': request.json.get('description', ""),
     }
+
+    if db_connector.check_exist_user(user['login']):
+        return jsonify(error = 3), 201
+        
     db_connector.create_user_from_dict(user)
 
     return jsonify(user), 201
@@ -153,7 +157,7 @@ def api_authentication():
     if not db_connector.check_exist_user(login):
         return jsonify(error = 1), 201
     if not db_connector.check_valid_login_password(login, password):
-        return jsonify(error = 1), 201
+        return jsonify(error = 2), 201
     return jsonify(login=login, password=password), 201
 
 @app.route('/api/timetable')
