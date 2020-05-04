@@ -20,7 +20,10 @@ db_connector.create_user('m-wazowski@gmail.com', '1234', \
                         'Mike', 'Wazowski', 2, 'User description text')
 db_connector.create_user('g-house@gmail.com', '1234', \
                         'Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
-db_connector.create_event('05.05.2020', '15:00', 'first test event', 1)
+db_connector.create_event("05.05.2020", '15:00', 'event description', 1)
+db_connector.create_event("05.05.2020", '12:00', 'my description', 1)
+db_connector.create_event("06.05.2020", '12:00', 'event description', 1)
+# db_connector.create_event("10.05.2020", '13:00', 'consilium', 2)
 
 def login_required(f):
     @wraps(f)
@@ -127,7 +130,7 @@ def api_create_user():
 
     if db_connector.check_exist_user(user['login']):
         return jsonify(error = 3), 201
-        
+
     db_connector.create_user_from_dict(user)
 
     return jsonify(user), 201
@@ -146,6 +149,7 @@ def api_get_image(id):
         abort(404)
     return send_file(file_path, mimetype='image/png')
 
+
 @app.route('/api/authentication', methods=['POST'])
 def api_authentication():
     if not request.json or not 'login' in request.json \
@@ -160,9 +164,23 @@ def api_authentication():
         return jsonify(error = 2), 201
     return jsonify(login=login, password=password), 201
 
+
 @app.route('/api/timetable')
 def api_timetable():
     events = db_connector.get_all_events()
+    return jsonify(events), 201
+
+
+@app.route('/api/user_events', methods=['POST'])
+def api_user_events():
+    if not request.json or not 'login' in request.json:
+        abort(400)
+    login = request.json['login']
+    
+    if not db_connector.check_exist_user(login):
+        return jsonify(error = 1), 201
+    
+    events = db_connector.get_user_events(login)
     return jsonify(events), 201
 
 
