@@ -179,9 +179,10 @@ def api_timetable():
 
 @app.route('/api/user_events', methods=['POST'])
 def api_user_events():
-    if not request.json or not 'login' in request.json:
+    if not request.json or not 'user_id' in request.json:
         abort(400)
-    login = request.json['login']
+    user_id = request.json['user_id']
+    login = db_connector.get_login_by_user_id(user_id)  
     
     if not db_connector.check_exist_user(login):
         return jsonify(error = 1), 201
