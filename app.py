@@ -128,10 +128,12 @@ def api_create_user():
 
     return jsonify(user), 201
 
+
 @app.route('/api/users')
 def api_users():
     users = db_connector.get_all_users()
     return jsonify(users), 201
+
 
 @app.route('/api/user_image/<int:id>.png')
 def api_get_image(id):
@@ -140,10 +142,25 @@ def api_get_image(id):
         abort(404)
     return send_file(file_path, mimetype='image/png')
 
+@app.route('/api/authentication', methods=['POST'])
+def api_authentication():
+    if not request.json or not 'login' in request.json \
+                        or not 'password' in request.json:
+        abort(400)
+    login = request.json['login']
+    password = request.json['password']
+    
+    if not db_connector.check_exist_user(login):
+        return jsonify(error = 1), 201
+    if not db_connector.check_valid_login_password(login, password):
+        return jsonify(error = 1), 201
+    return jsonify(login=login, password=password), 201
+
 @app.route('/api/timetable')
 def api_timetable():
     events = db_connector.get_all_events()
     return jsonify(events), 201
+
 
 @app.route('/api/create_event', methods=['POST'])
 def api_create_event():
