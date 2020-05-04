@@ -22,10 +22,13 @@ db_connector.create_user('m-wazowski@gmail.com', '1234', \
                         'Mike', 'Wazowski', 2, 'User description text')
 db_connector.create_user('g-house@gmail.com', '1234', \
                         'Gregory', 'House', 1, 'Unconventional, misanthropic medical genius')
-db_connector.create_event("05.05.2020", '15:00', 'event description', 1)
-db_connector.create_event("05.05.2020", '12:00', 'my description', 1)
-db_connector.create_event("06.05.2020", '12:00', 'event description', 1)
-db_connector.create_event("10.05.2020", '13:00', 'consilium', 2)
+db_connector.create_event("05.05.2020", '12:00', 'my description', db_connector.get_user_id_by_login('1@m.m'))
+db_connector.create_event("01.05.2020", '12:00', 'Past event description', db_connector.get_user_id_by_login('1@m.m'))
+db_connector.create_event("05.05.2020", '15:00', 'event description', db_connector.get_user_id_by_login('1@m.m'))
+db_connector.create_event("10.05.2020", '13:00', 'Future event', db_connector.get_user_id_by_login('1@m.m'))
+
+db_connector.create_event("10.05.2020", '13:00', 'consilium', db_connector.get_user_id_by_login('m-wazowski@gmail.com'))
+
 
 def login_required(f):
     @wraps(f)
