@@ -199,13 +199,13 @@ def api_create_event():
     if not request.json or not 'date' in request.json \
                         or not 'time' in request.json \
                         or not 'description' in request.json \
-                        or not 'user_login' in request.json:
+                        or not 'user_id' in request.json:
         abort(400)
     event = {
         'date': request.json['date'],
         'time': request.json['time'],
         'description': request.json.get('description', ""),
-        'user_login': request.json['user_login'],
+        'user_id': request.json['user_id'],
     }
     db_connector.create_event_from_dict(event)
 
