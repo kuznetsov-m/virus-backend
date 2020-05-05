@@ -32,6 +32,8 @@ db_connector.create_event("10.05.2020", '13:00', 'Future event', db_connector.ge
 
 db_connector.create_event("10.05.2020", '13:00', 'consilium', db_connector.get_user_id_by_login('m-wazowski@gmail.com'))
 
+db_connector.add_token('-0-1-2-3-')
+
 
 def login_required(f):
     @wraps(f)
