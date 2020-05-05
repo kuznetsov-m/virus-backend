@@ -5,6 +5,7 @@ from functools import wraps
 import sqlite3
 from flask_cors import CORS
 import io
+import base64
 
 import os
 import json
@@ -173,15 +174,15 @@ def api_get_image(id):
 #         return send_file(io.BytesIO(image_binary), mimetype='image/png')
 #         # return send_file(io.BytesIO(image_binary), mimetype='image/png', as_attachment=True, attachment_filename='%s.png' % id)
 
-@app.route('/api/user_image_bytearray/<int:id>.png')
-def api_user_image_bytearray(id):
+@app.route('/api/user_image_base64/<int:id>.png')
+def api_user_image_base64(id):
     file_path = f'users/{id}.png'
     if not os.path.isfile(file_path):
         abort(404)
-    with open(file_path, 'rb') as image:
-        f = image.read()
-        b = bytearray(f)
-        return b
+    with open(file_path, "rb") as imageFile:
+        return base64.b64encode(imageFile.read())
+
+
 
 
 @app.route('/api/authentication', methods=['POST'])
