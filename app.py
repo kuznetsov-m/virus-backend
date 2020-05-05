@@ -3,6 +3,7 @@ from flask import Flask, jsonify, request, render_template, redirect, url_for, r
 from sys import argv
 from functools import wraps
 import sqlite3
+from flask_cors import CORS
 
 import os
 import json
@@ -14,6 +15,8 @@ app = Flask(__name__)
 app.secret_key = 'my secret key'
 app.database = 'sample.db'
 app.config['USERS'] = os.path.join('users')
+
+CORS(app)
 
 db_connector = DbConnector(app.database)
 db_connector.create_user('1@m.m', '1', \
