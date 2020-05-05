@@ -155,23 +155,33 @@ def api_users():
     return jsonify(users), 201
 
 
-# @app.route('/api/user_image/<int:id>.png')
-# def api_get_image(id):
-#     file_path = f'users/{id}.png'
-#     if not os.path.isfile(file_path):
-#         abort(404)
-#     return send_file(file_path, mimetype='image/png')
-
 @app.route('/api/user_image/<int:id>.png')
 def api_get_image(id):
     file_path = f'users/{id}.png'
     if not os.path.isfile(file_path):
         abort(404)
+    return send_file(file_path, mimetype='image/png')
+
+# @app.route('/api/user_image/<int:id>.png')
+# def api_get_image(id):
+#     file_path = f'users/{id}.png'
+#     if not os.path.isfile(file_path):
+#         abort(404)
+#     with open(file_path, 'rb') as image:
+#         f = image.read()
+#         image_binary = f
+#         return send_file(io.BytesIO(image_binary), mimetype='image/png')
+#         # return send_file(io.BytesIO(image_binary), mimetype='image/png', as_attachment=True, attachment_filename='%s.png' % id)
+
+@app.route('/api/user_image_bytearray/<int:id>.png')
+def api_user_image_bytearray(id):
+    file_path = f'users/{id}.png'
+    if not os.path.isfile(file_path):
+        abort(404)
     with open(file_path, 'rb') as image:
         f = image.read()
-        image_binary = f
-        return send_file(io.BytesIO(image_binary), mimetype='image/png')
-        # return send_file(io.BytesIO(image_binary), mimetype='image/png', as_attachment=True, attachment_filename='%s.png' % id)
+        b = bytearray(f)
+        return b
 
 
 @app.route('/api/authentication', methods=['POST'])
