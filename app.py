@@ -4,6 +4,7 @@ from sys import argv
 from functools import wraps
 import sqlite3
 from flask_cors import CORS
+import io
 
 import os
 import json
@@ -154,12 +155,23 @@ def api_users():
     return jsonify(users), 201
 
 
+# @app.route('/api/user_image/<int:id>.png')
+# def api_get_image(id):
+#     file_path = f'users/{id}.png'
+#     if not os.path.isfile(file_path):
+#         abort(404)
+#     return send_file(file_path, mimetype='image/png')
+
 @app.route('/api/user_image/<int:id>.png')
 def api_get_image(id):
     file_path = f'users/{id}.png'
     if not os.path.isfile(file_path):
         abort(404)
-    return send_file(file_path, mimetype='image/png')
+    with open(file_path, 'rb') as image:
+        f = image.read()
+        image_binary = f
+        return send_file(io.BytesIO(image_binary), mimetype='image/png')
+        # return send_file(io.BytesIO(image_binary), mimetype='image/png', as_attachment=True, attachment_filename='%s.png' % id)
 
 
 @app.route('/api/authentication', methods=['POST'])
